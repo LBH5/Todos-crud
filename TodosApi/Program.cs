@@ -41,6 +41,7 @@ using (var scope = app.Services.CreateScope())
     {
         db.Todos.AddRange(
             new Todo { Title = "Buy groceries", IsCompleted = false },
+            new Todo { Title = "Learning .net core microservices", IsCompleted = false },
             new Todo { Title = "Walk the dog", IsCompleted = true }
         );
         db.SaveChanges();
