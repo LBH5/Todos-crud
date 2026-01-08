@@ -1,6 +1,6 @@
+using Carter;
 using Microsoft.EntityFrameworkCore;
 using TodosApi.Data;
-using TodosApi.Endpoints;
 using TodosApi.Entities;
 using TodosApi.Repositories;
 
@@ -10,6 +10,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<TodosDbContext>(opt =>opt.UseInMemoryDatabase("TodoList"));
 builder.Services.AddTransient<ITodoRepository, TodoRepository>();
 
+// Add Carter for modular endpoints
+builder.Services.AddCarter();
+// Add JWT authentication support
+builder.Services.AddAuthentication()
+    .AddJwtBearer(options =>
+    {
+       options.Authority = builder.Configuration["Jwt:Authority"]!;
+       options.Audience = builder.Configuration["Jwt:Audience"]!;
+        options.RequireHttpsMetadata = false;
+    });
+
+// Autorization
+builder.Services.AddAuthorizationBuilder();
 // Adding swagger support (OpenAPI)
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -25,8 +38,8 @@ if (app.Environment.IsDevelopment())
 
 // Configure piplline - UseMethod (Middleware)
 
-// Map Endpoints
-app.MapTodoEndpoints();
+// Map Carter endpoints
+app.MapCarter();
 
 // Seed initial data
 using (var scope = app.Services.CreateScope())

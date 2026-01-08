@@ -1,0 +1,12 @@
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.5.0
+    command: ["start-dev"]
+  todosapi:
+    image: ${DOCKER_REGISTRY-}todosapi
+    build:
+      context: TodosApi
+      dockerfile: Dockerfile
+volumes:
+  keycloak_data:
